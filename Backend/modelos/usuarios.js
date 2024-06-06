@@ -1,4 +1,4 @@
-const conexion = require('./conexion.js');
+const conexion = require('../conexion.js');
 
 
 const getUser = (usuario, contraseña, callback) =>{
@@ -8,6 +8,9 @@ const getUser = (usuario, contraseña, callback) =>{
         callback(rows);
     });
 }
+
+
+
 module.exports = {
     getUser
 }; 
