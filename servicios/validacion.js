@@ -1,11 +1,22 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
-function CrearToken(usuario) {
+function crearToken(usuario) {
+    if (!config.SECRET_TOKEN) {
+        throw new Error('SECRET_TOKEN no está definido en la configuración.');
+    }
+
     const payload = {
-        usuario: usuario._id,
-        iat: Date.now(),
+        usuario: usuario.Id,
+        iat: Math.floor(Date.now() / 1000), // Convertir milisegundos a segundos
     };
-    return jwt.sign(payload, config.SECRET_TOKEN);
+
+    try {
+        return jwt.sign(payload, config.SECRET_TOKEN);
+    } catch (error) {
+        console.error('Error al crear el token:', error);
+        throw error; // Re-lanzar el error después de loguearlo
+    }
 }
-module.exports = CrearToken;
+
+module.exports = crearToken;

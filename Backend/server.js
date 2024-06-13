@@ -1,11 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const conexion = require('./conexion.js');
+const {  router} = require('./controladores/user_functions_controller.js');
+//const conexion = require('./conexion.js');
 const app = express();
 app.use(cors());
-
+app.use(express.json()); // Middleware para parsear JSON en el body de las peticiones
 app.use(cors({
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: 'http://localhost' 
 }));
 
 app.use(express.json());
@@ -21,5 +22,5 @@ app.use((req, res, next) => {
 const authRoutes = require('./controladores/auth.js');
 app.use('/auth', authRoutes);
 
-const userFunctionsRoutes = require('./controladores/user_functions_controller.js');
-app.use('/user_functions', userFunctionsRoutes);
+
+app.use('/user_functions', router);

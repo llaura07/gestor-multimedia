@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body>
+    <div ng-app="myApp_index_admin_videos" ng-controller="index_videos_controller">
+        <div class="container">
+            <div class="row">
+               
+                <div class="col-md-8">
+                    <br>
+                    <strong>Videos</strong>
+                    <br>
+                    <button type="button" class="btn btn-dark pull-right" ng-click="logOut()"><i class="bi bi-box-arrow-right"></i></button>
+                </div>
+                
+                <div class="col-md-12">
+                    <br>
+                    <button type="button" class="btn btn-primary pull right" data-toggle="modal"
+                        data-target="#add_video" ng-click="newVideo = {}">Añadir video</button>
+                    
+                    <button type="button" class="btn btn-primary pull right" data-toggle="modal"
+                        data-target="#categorias">Administrar Categorias</button>
+                    
+
+                    <button type="button" class="btn btn-primary pull-right" onclick="location.href='./index_admin.html'">Administrar Usuarios</button>
+                </div>
+            </div>
+
+            <div class="alert alert-info" ng-if="message">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message}}
+            </div>
+            <br>
+            <div class="row">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th ng-repeat="categoria in categories">{{ categoria }}</th>
+                            
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="i in range">
+                            <td ng-repeat="category in categories">
+                                <div ng-if="videosByCategory[category][i]">
+                                    
+                                    
+                                    <strong>{{ videosByCategory[category][i].nombre }}</strong>
+                                   
+                                    <p>{{ videosByCategory[category][i].autor }}</p>
+                                    <iframe width="320" height="150" ng-src="{{ getEmbedUrl(videosByCategory[category][i].url) }}" frameborder="0" allowfullscreen></iframe>
+                                
+                                    <button type="button" class="btn btn-primary pull-right" data-toggle="modal"
+                                    ng-click="setVideoForEdit(videosByCategory[category][i])"><i class="bi bi-pencil"></i></button>
+
+                                    <button type="submit" class="btn btn-danger"  ng-click="deleteVideo(videosByCategory[category][i])"
+                                    data-dismiss="modal"><i class="bi bi-trash"></i></button>
+                                </div>
+                                
+                                    
+                                
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="add_video" role="dialog">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5>Añadir video</h5>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Titulo</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" name="titulo" id="titulo"
+                                            placeholder="Ingrese titulo" ng-model="newVideo.nombre" required>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Autor</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" name="autor" id="autor"
+                                            placeholder="Ingrese autor" ng-model="newVideo.autor" required>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Url</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" name="url" id="url"
+                                            placeholder="Ingrese url" ng-model="newVideo.url" required>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Categoria</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control" name="categoria" id="categoria" ng-model="newVideo.categoria" required>
+                                            <option value="">Seleccione una categoria</option>
+                                            <option ng-repeat="categoria in categorias" value="{{categoria.id}}">{{categoria.nombre}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-info" ng-click="saveVideo()"
+                                            data-dismiss="modal">Guardar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="editar_video" role="dialog">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5>Editar video</h5>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Titulo</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" name="titulo" id="titulo"
+                                             ng-model="newVideo.nombre" required>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Autor</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" name="autor" id="autor"
+                                             ng-model="newVideo.autor" required>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Url</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" name="url" id="url"
+                                             ng-model="newVideo.url" required>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Categoria</label>
+                                    <div class="col-sm-7">
+                                    <select class="form-control" name="categoria" id="categoria" ng-model="newVideo.categoria" ng-options="categoria.id as categoria.nombre for categoria in categorias" ng-init="newVideo.categoria = video.categoria_id" required>
+                                        <option value=""></option>
+                                    </select>
+                                    </div>
+                                </div>
+    
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-info" ng-click="editarVideo(newVideo)"
+                                            data-dismiss="modal">Guardar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="categorias" role="dialog">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5>Gestionar categorías</h5>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">Nueva categoría</label>
+                                    <div class="col-sm-7">
+                                        <input type="text" class="form-control" name="nueva_categoria" id="nueva_categoria"
+                                               ng-model="nuevaCategoria.nombre" required>
+                                    </div>
+                                    <br>
+                                    <div class="col-sm-2">
+                                        <button type="submit" class="btn btn-info" ng-click="submitCategoria()"
+                                            data-dismiss="modal">Añadir</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="categoria in categorias">
+                                        <td>
+                                            <input type="text" class="form-control" name="editarCategoria" id="editarCategoria"
+                                                ng-model="categoria.nombre" ng-value="categoria.nombre">
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-info" ng-click="editarCategoria(categoria)">Editar</button>
+                                            <button class="btn btn-danger" ng-click="eliminarCategoria(categoria)">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+            
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="./js/index_admin_videos.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
