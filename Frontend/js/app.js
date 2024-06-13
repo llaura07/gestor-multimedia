@@ -1,4 +1,4 @@
-'use strict';
+
 var app = angular.module('myApp', []);
 
 app.controller('appCtrl', ['$scope', '$http', function($scope, $http){
@@ -25,8 +25,11 @@ app.controller('appCtrl', ['$scope', '$http', function($scope, $http){
             localStorage.setItem('token', response.data.token);
             console.log(response.data);
 
-
-            window.location.href = 'index_admin_videos.html';
+            if (response.data.role == 'admin') {
+                window.location.href = 'index_admin_videos.html';
+            } else {
+                window.location.href = 'index_user.html';
+            }
             
 
         }, function(error) {

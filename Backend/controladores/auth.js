@@ -12,6 +12,7 @@ authExpressRouter.post('/login', async (req, res) => {
         console.log(rows);
         const token = CrearToken(rows[0]);
         const userId = rows[0].Id;
+        const userRole = rows[0].Role; // Asegúrate de que tu función getUser devuelve un objeto de usuario que incluye una propiedad Role
 
         // Crear la sesión aquí
         const fecha_inicio = new Date();
@@ -29,7 +30,7 @@ authExpressRouter.post('/login', async (req, res) => {
             if (err){
                 return res.status(500).json({ message: 'Database error' });
             }
-            res.status(200).json({ message: 'Usuario encontrado', token: token, userId: userId, session: result });
+            res.status(200).json({ message: 'Usuario encontrado', token: token, userId: userId, role: userRole, session: result });
         });
     });
 });
