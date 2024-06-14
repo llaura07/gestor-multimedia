@@ -1,4 +1,5 @@
 # gestor-multimedia
+## integrantes: Laura Camila Lucumi Rivera
 dentro de este repositorio se encuentra la practica final del laboratorio de ingenieria de software
 Teniendo en cuenta las funcionalidades obligatorias y opcionales planteadas para el proyecto he creado un sitio web con acceso autenticado que consta de 2 partes, la parte 1 es la del usuario con rol de administrador quien puede crear, seleccionar, editar y eliminar videos, categorias y usuarios de la pagina con las credenciales:
 ## Usuario: 
