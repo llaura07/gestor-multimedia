@@ -12,7 +12,7 @@ authExpressRouter.post('/login', async (req, res) => {
         console.log(rows);
         const token = CrearToken(rows[0]);
         const userId = rows[0].Id;
-        const userRole = rows[0].Role; // Asegúrate de que tu función getUser devuelve un objeto de usuario que incluye una propiedad Role
+        const userRole = rows[0].Rol; // Asegúrate de que tu función getUser devuelve un objeto de usuario que incluye una propiedad Role
 
         // Crear la sesión aquí
         const fecha_inicio = new Date();
